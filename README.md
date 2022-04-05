@@ -9,6 +9,10 @@ Currently the following commands are supported:
 - Background (bg)
 - Rectangle (rect)
 - Circle (circle)
+- Arcs (arc)
+- Lines (line)
+- Polygons (poly)
+- Text (text)
 - BlendMode (bm)
 
 ![Organic sketch, rectangles jumping around](./docs/x-organic.png)
@@ -31,17 +35,18 @@ import { ... } from "https://cdn.jsdelivr.net/gh/birdboat00/ajnor/src/mod.mjs"
 
 Draw a rectangle:
 ```js
-import { canvas, makePen, pipe, plot, rect, cols } from "/path/to/ajnor/mod.mjs"
+import * as a from "../src/mod.mjs"
 
-const cv = canvas(400, 400)
-const draw = () => {
-  const queue = pipe(makePen())
-    .to(bg, { color: cols.colblack() })
-    .to(rect, {x: 20, y: 20, w: 360, h: 360, fill: cols.colwhite() })
-  plot(cv, queue.value);
-  requestAnimationFrame(draw)
-}
-requestAnimationFrame(draw)
+a.defsketch({
+  size: a.szsquare(400),
+  parent: "example",
+  view: (cv) => {
+    a.plot(cv, a.pipe(a.makePen())
+      .to(a.bg, { color: a.colblack() })
+      .to(a.rect, { x: 20, y: 20, w: 360, h: 360, color: a.colwhite() }).value
+    )
+  }
+})
 ```
 
 ## Disclaimer

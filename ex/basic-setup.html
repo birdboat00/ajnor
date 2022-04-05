@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic setup | examples | ajnor</title>
+
+    <link rel="stylesheet" href="../style.css">
+
+    <script type="module" id="script">
+        import * as a from "../src/mod.mjs"
+
+        a.defsketch({
+          size: a.szsquare(400),
+          parent: "example",
+          view: (cv) => {
+            a.plot(cv, a.pipe(a.makePen())
+              .to(a.bg, { color: a.colblack() })
+              .to(a.rect, { x: 20, y: 20, w: 360, h: 360, color: a.colwhite() }).value
+            )
+          }
+        })
+    </script>
+</head>
+
+<body>
+    <main>
+        <h1>Basic setup | <a href="./index.html">ajnor examples</a></h1>
+        <div id="example"></div>
+    </main>
+</body>
+
+</html>

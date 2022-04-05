@@ -1,40 +1,27 @@
-import { canvas, makePen, bm, bg, rect, plot, pipe, rgb, hsl } from "./src/mod.mjs"
+import * as ron from "./src/mod.mjs"
 
-const randomRange = (min, max) => {
-  return Math.random() * (max - min) + min
-}
-
-const clamp = (num, min, max) => {
-  return Math.min(Math.max(num, min), max)
-}
-
-const maprng = (n, start1, stop1, start2, stop2, bnds) => {
-  const newval = (n - start1) / (stop1 - start1) * (stop2 - start2) + start2;
-  if(!bnds) return newval;
-  else if(start2 < stop2) return clamp(newval, start2, stop2)
-  else return clamp(newval, stop2, start2);
-}
-
-const cvw = 1000;
-const cvh = 1000;
-const ctx = canvas(cvw, cvh);
-const bgcmd = pipe(makePen())
-  .to(bg, { color: rgb(0xff, 0xf7, 0xf0)})
-  .to(bm, { op: 'multiply' })
-plot(ctx, bgcmd.value);
-
-const organic = () => {
-  const x = cvw / randomRange(70, 1000);
-
-  let queue = pipe(makePen());
-  for (let i = 0; i < cvh * 2; i += x) {
-    const xp = cvw / 2 + (Math.tan(i) * i) / (x * 2);
-    const yp = cvh - i;
-    const hue = maprng(x, cvh / 1000, cvw / 70, 130, 50);
-    queue.to(rect, { x: xp, y: yp, w: x, h: x, color: hsl(hue, 33, 45) });
+  ron.defsketch({
+  size: ron.szsquare(1000),
+  title: "x-organic",
+  view: (cv) => {
+    const p = cv.w / ron.randomRange(70, 1000);
+    const loop = (i, cmds) => {
+      if (i < cv.h * 2) {
+        const x = cv.w / 2 + (Math.tan(i) * i) / (p * 2);
+        const y = cv.h - i;
+        const hue = ron.maprng(p, cv.h / 1000, cv.w / 70, 130, 50);
+        const q = cmds.to(ron.rect, {x: x, y: y, w: p, h: p, color: ron.hsl(hue, 33, 45)});
+        return loop(i + p, q);
+      }
+      return cmds;
+    }
+    const q = loop(0, ron.pipe(ron.makePen()));
+    ron.plot(cv, q.value);
+  },
+  setup: (cv) => {
+    const queue = ron.pipe(ron.makePen())
+      .to(ron.bg, { color: ron.rgb(0xff, 0xf7, 0xf0) })
+      .to(ron.bm, { op: 'multiply' })
+    ron.plot(cv, queue.value)
   }
-
-  plot(ctx, queue.value);
-  requestAnimationFrame(organic);
-};
-requestAnimationFrame(organic);
+})

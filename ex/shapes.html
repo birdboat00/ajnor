@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic setup | examples | ajnor</title>
+
+    <link rel="stylesheet" href="../style.css">
+
+    <script type="module" id="script">
+        import * as a from "../src/mod.mjs"
+
+        a.defsketch({
+          size: a.szsquare(400),
+          parent: "example",
+          view: (cv) => {
+            a.plot(cv, a.pipe(a.makePen())
+              .to(a.bg, { color: a.rgb(0x33, 0x33, 0x33) })
+              .to(a.rect,{ x: 10, y: 10, w: 200, h: 100, color: a.colred() })
+              .to(a.line, { x: 10, y: 240, ex: 390, ey: 240, color: a.colblue() })
+              .to(a.arc, { x: 200, y: 300, r: 50, start: 0, end: Math.PI, color: a.colgreen() })
+              .to(a.poly, { pts: [
+                { x: 300, y: 300 },
+                { x: 320, y: 320 },
+                { x: 320, y: 340 },
+                { x: 340, y: 310 },
+                { x: 330, y: 350 }
+              ], color: a.colyellow() })
+              .to(a.text, { x: 10, y: 390, text: "This is some text!", size: 16, color: a.colwhite() })
+              .value
+            )
+          }
+        })
+    </script>
+</head>
+
+<body>
+    <main>
+        <h1>Basic setup | <a href="./index.html">ajnor examples</a></h1>
+        <div id="example"></div>
+    </main>
+</body>
+
+</html>
