@@ -84,7 +84,7 @@ export const defsketch = (props) => {
   const parent = document.getElementById(props.parent) || document.body 
 
   const cv = canvas(size, parent);
-
+  
   let model = setup(cv) || {};
   let iterations = 0;
   const loop = () => {

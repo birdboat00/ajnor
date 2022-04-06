@@ -1,10 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>ajnor</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ajnor - a creative-coding framework</title>
+
+    <link rel="stylesheet" href="./style.css">
+
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.4.0/build/highlight.min.js"></script>
+    <script defer>hljs.highlightAll();</script>
 </head>
+
 <body>
-  <script type="module" src="./main.mjs"></script>
+    <header>
+        <div id="title">
+            <a href="./">ajnor</a>
+        </div>
+        <div id="menu">
+            <a href="./cheatsheet.html">cheatsheet</a>
+            <a href="./ex/">examples</a>
+            <a href="https://github.com/birdboat00/ajnor/">github</a>
+        </div>
+    </header>
+    <main>
+        <p class="cc">
+            ajnor is an open-source creative coding toolkit
+            for modern JavaScript.
+            <br>
+            It is lightweight, functional and fast.
+            <br>
+            It allows you to create your starry nightsky at a squint.
+        </p>
+        <img src="./docs/x-organic.png">
+        <p class="cc">
+          Get started:
+          <pre><code>import * as a from "https://cdn.jsdelivr/gh/birdboat00/ajnor/src/mod.mjs"
+
+a.defsketch({
+  view: (cv) => {
+    a.plot(cv, a.pipe(a.mkpen())
+      .to(a.bg, { c: a.colblack() })
+      .to(a.rect { p: a.pt(20, 20), w: 360, h: 360, c: a.colwhite() })
+      .value
+    )
+  }
+})</code></pre>
+        </p>
+    </main>
+    <footer>
+        <a href="../">ajnor</a> by <a href="https://github.com/birdboat00">birdboat00</a> and contributors in 2022
+        licensed under the MIT license.
+    </footer>
 </body>
+
 </html>

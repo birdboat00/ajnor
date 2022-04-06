@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cheatsheet | ajnor</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <header>
+        <div id="title">
+            <a href="./">ajnor</a>
+        </div>
+        <div id="menu">
+            <a href="./cheatsheet.html">cheatsheet</a>
+            <a href="./ex/">examples</a>
+            <a href="https://github.com/birdboat00/ajnor/">github</a>
+        </div>
+    </header>
+    <main>
+        <h1>ajnor - cheatsheet</h1>
+        <section>
+            <h2>define a sketch</h2>
+            <pre><code>// define a sketch with its properties
+defsketch({
+    // the sketch name (optional)
+    title: "my sketch",
+    // sketch canvas size (optional, default = 400x400px)
+    size: sz(400, 400),
+    // parent DOM element id (optional, default = document.body)
+    parent: "parent-div",
+    // setup function, provides sketch model, called once (optional)
+    setup: (cv) => { return {} },
+    // view function, does the drawing, called repeatedly
+    view: (cv, mdl) => { return { ...mdl } },
+
+    // loop modes (all optional, default is refreshsync):
+    // framerate - frames per second the view function is called
+    framerate: 10,
+    // times - times the view function is called
+    times: 5
+})</code></pre>
+        </section>
+        <section>
+            <h2>maths</h2>
+            <pre><code>+ - / * // basic math operators
+PI // pi constant
+rnd() // random number between 0.0 and 1.0
+rndrn(min, max) // random number between min and max
+rndrni(min, max) // random integer between min and max
+maprn(num, start1, stop1, start2, stop2) // map number to another range</code></pre>
+        </section>
+        <section>
+            <h2>colour</h2>
+            <pre><code>{ r, g, b }
+// rgb colors use the range of 0-255
+col(100) // gray
+cola(100) // gray with alpha
+rgb(200, 100, 50) // rgb color
+rgba(200, 100, 50, 100) // rgb color with alpha
+// pre-defined colors (colblack, colwhite, colred, colgreen, colblue
+// colyellow, colmagenta, colcyan, coltransparent)
+colyellow()
+// hue(0-360)-saturation(0-100)-lightness(0-100) colors
+hsl(200, 100, 50)
+// hue(0-360)-saturation(0-100)-brightness(0-100) colors
+hsb(200, 50, 60)</code></pre>
+        </section>
+        <section>
+            <h2>pt</h2>
+            <pre><code>{ x, y }
+pt(x, y) // create point
+ptzero() // point at (x: 0, y: 0)</code></pre>
+        </section>
+        <section>
+            <h2>sz</h2>
+            <pre><code>{ w, h }
+sz(w, h) // create size
+szsquare(len) // create square size
+szmm(w, h) // create size from millimeters
+// pre-defined sizes (szpa3, szpa4, szpa5, szpa6, szpa7)
+szpa5()</code></pre>
+        </section>
+        <section>
+            <h2>drawing</h2>
+            <pre><code>// view function passed to defsketch
+// cv = canvas context, mdl = model passed from setup function
+(cv, mdl) => {
+    // create queue with mkpen() and pipe it to drawing function
+    const queue = pipe(mkpen())
+        // pipe draw command with properties (bg here)
+        .to(bg, { color: colblack() })
+        // get queue
+        .value;
+    // plot queue using the canvas context and the queue
+    plot(cv, queue)
+    // return state of this frame that gets passed to the next one
+    return { ...mdl }
+}</code></pre>
+        </section>
+        <section>
+            <h2>commands</h2>
+            <pre><code>// commands that get passed to the queue
+// form of command:
+.to(commandfunction, properties)
+// background (bg)
+{ c: colblack() /* background fill color */ }
+// common properties
+{
+    p: pt(10, 10), // position (p, pos)
+    c: colyellow(), // stroke and fill color (c, col, color)
+    fill: colred(), // fill color
+    stroke: colblue(), // stroke color
+}
+// rectangles (rect)
+{
+    w: 100, // width
+    h: 200, // height
+}
+// circles (circle)
+{
+    r: 10 // radius (r, radius)
+}
+// arcs (arc)
+{
+    r: 100, // radius (r, radius)
+    start: 0, // start angle in radians
+    end: Math.PI / 2, // end angle in radians
+}
+// lines (line)
+{
+    ex: 40, // end x coordinate
+    ey: 50, // end y coordinate
+}
+// polygon (poly)
+{
+    pts: [pt(20, 20), pt(30, 30), pt(50, 20)] // edge points
+}
+// text (text)
+{
+    fontName: 'Arial', // font name
+    size: 12, // font size
+    text: "Some text", // text string
+}
+// blendmode (bm)
+{
+    op: 'xor' // blend mode operation (op, mode)
+}
+// pixelbuffer (pixels)
+{
+    fn: (pixels) => {
+        const newpixels = [...pixels]
+        // modify pixels here
+        return newpixels;
+    }
+}</code></pre>
+        </section>
+    </main>
+    <footer>
+        <a href="../">ajnor</a> by <a href="https://github.com/birdboat00">birdboat00</a> and contributors in 2022
+        licensed under the MIT license.
+    </footer>
+</body>
+
+</html>
