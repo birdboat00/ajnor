@@ -8,6 +8,7 @@
     <title>Basic setup | examples | ajnor</title>
 
     <link rel="stylesheet" href="../style.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.4.0/build/highlight.min.js"></script>
 
     <script type="module" id="script">
         import * as a from "../src/mod.mjs"
@@ -16,7 +17,7 @@
           size: a.szsquare(400),
           parent: "example",
           view: (cv) => {
-            a.plot(cv, a.pipe(a.makePen())
+            a.plot(cv, a.pipe(a.mkpen())
               .to(a.bg, { color: a.colblack() })
               .to(a.rect, { x: 20, y: 20, w: 360, h: 360, color: a.colwhite() }).value
             )
@@ -30,6 +31,7 @@
         <h1>Basic setup | <a href="./index.html">ajnor examples</a></h1>
         <div id="example"></div>
     </main>
+    <script src="./injectcode.js" defer></script>
 </body>
 
 </html>

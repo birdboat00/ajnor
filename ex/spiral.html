@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spiral | examples | ajnor</title>
+
+    <link rel="stylesheet" href="../style.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.4.0/build/highlight.min.js"></script>
+
+    <script type="module" id="script">
+        import * as a from "../src/mod.mjs"
+
+        a.defsketch({
+          size: a.szsquare(600),
+          parent: "example",
+          setup: (cv) => {
+            a.plot(cv, a.pipe(a.mkpen()).to(a.bg, { c: a.colblack() })
+              .value);
+            return {
+              color: a.colred(),
+              angle: 2.0,
+              scalar: 3.5,
+              speed: 0.2,
+              offset: 300
+            }
+          },
+          view: (cv, mdl) => {
+            let _mdl = { ...mdl }
+            _mdl.color = a.rgb(a.rndrni(0, 255), a.rndrni(0, 255), a.rndrni(0, 255));
+            const x = _mdl.offset + Math.cos(_mdl.angle) * _mdl.scalar;
+            const y = _mdl.offset + Math.sin(_mdl.angle) * _mdl.scalar;
+            _mdl.angle += _mdl.speed;
+            _mdl.scalar += _mdl.speed;
+            
+            a.plot(cv,
+              a.pipe(a.mkpen())
+                .to(a.circle, { p: a.pt(x, y), r: 2, c: _mdl.color})
+              .value)
+            return _mdl;
+          }
+        })
+    </script>
+</head>
+
+<body>
+    <main>
+        <h1>Basic setup | <a href="./index.html">ajnor examples</a></h1>
+        <div id="example"></div>
+    </main>
+    <script src="./injectcode.js" defer></script>
+</body>
+</html>
