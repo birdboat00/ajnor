@@ -41,9 +41,9 @@ a.defsketch({
   size: a.szsquare(400),
   parent: "example",
   view: (cv) => {
-    a.plot(cv, a.pipe(a.makePen())
+    a.plot(cv, a.pipe(a.mkpen())
       .to(a.bg, { color: a.colblack() })
-      .to(a.rect, { x: 20, y: 20, w: 360, h: 360, color: a.colwhite() }).value
+      .to(a.rect, { p: a.pt(20, 20), w: 360, h: 360, color: a.colwhite() }).value
     )
   }
 })
