@@ -54,4 +54,4 @@ I just started working on this library and there is still a lot of work to
 be done. Feel free to help out!
 
 ## License
-ajnor is licensed under the MIT license.
+ajnor is licensed under the 0BSD license.
