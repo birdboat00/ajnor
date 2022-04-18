@@ -1,6 +1,6 @@
 import * as ron from "./src/mod.mjs"
 
-ron.defsketch({
+ron.mksketch({
   size: ron.szsquare(1000),
   title: "x-organic",
   view: (cv) => {

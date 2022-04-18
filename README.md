@@ -37,7 +37,7 @@ Draw a rectangle:
 ```js
 import * as a from "../src/mod.mjs"
 
-a.defsketch({
+a.mksketch({
   size: a.szsquare(400),
   parent: "example",
   view: (cv) => {

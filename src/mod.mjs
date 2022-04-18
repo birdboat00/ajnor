@@ -1,23 +1,17 @@
 // Base functions
 export const pipe = x => ({ value: x, to: (f, ...a) => pipe(f(x, ...a))});
-
 // Math
 export const max = Math.max;
 export const min = Math.min;
 export const rnd = Math.random;
 export const PI = Math.PI;
 export const rndrn = (mn, mx) => rnd() * (mx - mn) + mn;
-export const rndrni = (mn, mx) => {
-  const _mn = Math.ceil(mn);
-  const _mx = Math.floor(mx);
-  return Math.floor(rnd() * (_mx - _mn)) + _mn;
-}
+export const rndrni = (mn, mx) => Math.floor(rnd() * (Math.floor(mx) - Math.ceil(mn))) + Math.ceil(mn)
 export const clamp = (n, mn, mx) => min(max(n, mn), mx);
 export const maprn = (n, b1, e1, b2, e2, b) => {
   const nv = (n - b1) / (e1 - b1) * (e2 - b2) + b2;
   return !b  ? nv : ((b2 < e2) ? clamp(nv, b2, e2) : clamp(nv, e2, b2));
 }
-
 // colors
 export const col = v => rgb(v, v, v);
 export const cola = v => rgba(v, v, v, v);
@@ -50,10 +44,9 @@ export const hsb = (hue, sat, bri) => {
 
 // sizes
 export const sz = (w, h) => ({ w, h })
-export const szsquare = (len) => sz(len, len);
-const cdist = (mm, ppi = 96) => Math.round(mm * ppi / 24.5) 
-const convdimtopix = (ds, ppi = 96) => ({ w: cdist(ds.w, ppi), h: cdist(ds.h, ppi)})
-export const szmm = (w, h) => convdimtopix(w, h)
+export const szsquare = len => sz(len, len);
+const mmpx = d => sz(Math.round(d.w * 96 / 24.5), Math.round(d.h * 96 / 24.5))
+export const szmm = (w, h) => mmpx(w, h)
 export const szpa3 = _ => szmm(297, 420)
 export const szpa4 = _ => szmm(210, 297)
 export const szpa5 = _ => szmm(140, 210)
@@ -64,16 +57,8 @@ export const szpa7 = _ => szmm(74, 105)
 export const pt = (x, y) => ({ x, y })
 export const ptzero = _ => pt(0, 0)
 
-// sketch
-const canvas = (sz, parent) => {
-  const cnv = document.createElement("canvas");
-  cnv.width = sz.w;
-  cnv.height = sz.h;
-  parent.appendChild(cnv);
-  return {ctx: cnv.getContext("2d"), w: cnv.width, h: cnv.height, parent}
-};
-
-export const defsketch = (props) => {
+// mksketch :: Properties -> IO ()
+export const mksketch = (props) => {
   document.title = props.title || document.title
   const setup = props.setup || (_ => {})
   const view = props.view || (_ => {})
@@ -83,7 +68,11 @@ export const defsketch = (props) => {
   const refreshsync = (!times && !framerate)
   const parent = document.getElementById(props.parent) || document.body 
 
-  const cv = canvas(size, parent);
+  const c = document.createElement("canvas")
+  c.width = size.w
+  c.height = size.h
+  parent.appendChild(c)
+  const cv = {ctx: c.getContext("2d"), w: c.width, h: c.height, parent };
   
   let model = setup(cv) || {};
   let iterations = 0;
@@ -101,8 +90,9 @@ export const defsketch = (props) => {
 }
 
 // drawing
+// mkpen :: Pen
 export const mkpen = () => ({ queue: [] })
-
+// commands
 const cmd = (cmd, pen, props) => ({ queue: [...pen.queue, { cmd, ...props }]})
 export const bm = (pen, props) => cmd('bm', pen, props);
 export const bg = (pen, props) => cmd('bg', pen, props);
@@ -127,7 +117,8 @@ export const measuretext = (ctx, str, sz, fnt) => {
   return sz(res.width, res.height);
 };
 
-export const plot = (ctx, pen) => {
+// plot :: State -> Pen -> IO ()
+export const plot = (s, pen) => {
   const handlers = {
     'pxs': (ctx, cmd) => {
       pipe(ctx.ctx.getImageData(0, 0, ctx.w, ctx.h))
@@ -205,5 +196,5 @@ export const plot = (ctx, pen) => {
 
   pen.queue
     .filter(c => c.cmd in handlers)
-    .forEach(c => handlers[c.cmd](ctx, c));
+    .forEach(c => handlers[c.cmd](s, c));
 }

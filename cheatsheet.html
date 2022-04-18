@@ -24,7 +24,7 @@
         <section>
             <h2>define a sketch</h2>
             <pre><code>// define a sketch with its properties
-defsketch({
+mksetch({
     // the sketch name (optional)
     title: "my sketch",
     // sketch canvas size (optional, default = 400x400px)
@@ -85,7 +85,7 @@ szpa5()</code></pre>
         </section>
         <section>
             <h2>drawing</h2>
-            <pre><code>// view function passed to defsketch
+            <pre><code>// view function passed to mksketch
 // cv = canvas context, mdl = model passed from setup function
 (cv, mdl) => {
     // create queue with mkpen() and pipe it to drawing function
