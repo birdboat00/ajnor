@@ -1,23 +1,21 @@
 // Base functions
-export const pipe = x => ({ value: x, to: (f, ...a) => pipe(f(x, ...a))});
+export const pipe = (x) => ({ value: x, to: (f, ...a) => pipe(f(x, ...a)) });
 // Math
-export const max = Math.max;
-export const min = Math.min;
-export const rnd = Math.random;
-export const PI = Math.PI;
-export const rndrn = (mn, mx) => rnd() * (mx - mn) + mn;
-export const rndrni = (mn, mx) => Math.floor(rnd() * (Math.floor(mx) - Math.ceil(mn))) + Math.ceil(mn)
-export const clamp = (n, mn, mx) => min(max(n, mn), mx);
-export const maprn = (n, b1, e1, b2, e2, b) => {
-  const nv = (n - b1) / (e1 - b1) * (e2 - b2) + b2;
-  return !b  ? nv : ((b2 < e2) ? clamp(nv, b2, e2) : clamp(nv, e2, b2));
-}
+export const { max, min, PI } = Math,
+  rnd = Math.random,
+  rndrn = (mn, mx) => (rnd() * (mx - mn)) + mn,
+  rndrni = (mn, mx) => Math.floor(rnd() * (Math.floor(mx) - Math.ceil(mn))) + Math.ceil(mn),
+  clamp = (n, mn, mx) => min(max(n, mn), mx),
+  maprn = (n, b1, e1, b2, e2, b) => {
+    const nv = (n - b1) / (e1 - b1) * (e2 - b2) + b2;
+    return !b ? nv : ((b2 < e2) ? clamp(nv, b2, e2) : clamp(nv, e2, b2));
+  }
 // colors
 export const col = v => rgb(v, v, v);
 export const cola = v => rgba(v, v, v, v);
 export const rgba = (r, g, b, a) => ({ r, g, b, a });
 export const rgb = (r, g, b) => rgba(r, g, b, 255);
-export const rgbah = h => rgba((h>>24)&0xff,(h>>16)&0xff,(h>>8)&&0xff);
+export const rgbah = h => rgba((h >> 24) & 0xff, (h >> 16) & 0xff, (h >> 8) && 0xff);
 export const colblack = () => rgb(0, 0, 0);
 export const colwhite = () => rgb(255, 255, 255);
 export const colred = () => rgb(255, 0, 0);
@@ -27,26 +25,25 @@ export const colyellow = () => rgb(255, 255, 0);
 export const colmagenta = () => rgb(255, 0, 255);
 export const colcyan = () => rgb(0, 255, 255);
 export const coltransparent = () => cola(0);
-const colcss = c => `rgb(${c.r}, ${c.g}, ${c.b})`;
+const colcss = c => `rgba(${c.r}, ${c.g}, ${c.b}, ${c.a})`;
 export const hsl = (hue, sat, lig) => {
-  const k = n => (n+hue / 30) % 12;
-  const a = (sat/100) * min(l, 1-l);
-  const f =n=>(lig/100)-a*max(-1,min(k(n)-3,min(9-k(n),1)));
+  const k = n => (n + hue / 30) % 12;
+  const a = (sat / 100) * min(l, 1 - l);
+  const f = n => (lig / 100) - a * max(-1, min(k(n) - 3, min(9 - k(n), 1)));
   return rgb(255 * f(0), 255 * f(8), 255 * f(4))
 }
 export const hsb = (hue, sat, bri) => {
   const s = sat / 100;
   const b = bri / 100;
-  const k = (n) => (n+hue/60)%6;
-  const f = (n) => b*(1-s*max(0,min(k(n),4-k(n),1)));
+  const k = (n) => (n + hue / 60) % 6;
+  const f = (n) => b * (1 - s * max(0, min(k(n), 4 - k(n), 1)));
   return rgb(255 * f(5), 255 * f(3), 255 * f(1))
 }
 
 // sizes
 export const sz = (w, h) => ({ w, h })
 export const szsquare = len => sz(len, len);
-const mmpx = d => sz(Math.round(d.w * 96 / 24.5), Math.round(d.h * 96 / 24.5))
-export const szmm = (w, h) => mmpx(w, h)
+export const szmm = (w, h) => sz(Math.round(w * 3.9184), Math.round(h * 3.9184));
 export const szpa3 = _ => szmm(297, 420)
 export const szpa4 = _ => szmm(210, 297)
 export const szpa5 = _ => szmm(140, 210)
@@ -60,25 +57,27 @@ export const ptzero = _ => pt(0, 0)
 // mksketch :: Properties -> IO ()
 export const mksketch = (props) => {
   document.title = props.title || document.title
-  const setup = props.setup || (_ => {})
-  const view = props.view || (_ => {})
+  const sfn = props.setup || (_ => { })
+  const vfn = props.view || (_ => { })
   const size = props.size || { w: 400, h: 400 }
   const framerate = props.framerate || props.fr || false
   const times = props.times || false
   const refreshsync = (!times && !framerate)
-  const parent = document.getElementById(props.parent) || document.body 
+  const parent = document.getElementById(props.parent) || document.body
 
   const c = document.createElement("canvas")
-  c.width = size.w
-  c.height = size.h
+  c.width = size.w;
+  c.height = size.h;
   parent.appendChild(c)
-  const cv = {ctx: c.getContext("2d"), w: c.width, h: c.height, parent };
-  
-  let model = setup(cv) || {};
+  const cv = { ctx: c.getContext("2d"), w: c.width, h: c.height, parent };
+
+  // FIXME: can we use any functional stuff here? afaik we don't because
+  // of requestAnimationFrame
+  let model = sfn(cv) || {};
   let iterations = 0;
   const loop = () => {
-    model = view(cv, model) || model;
-    
+    model = vfn(cv, model) || model;
+
     iterations = iterations + 1;
     if (refreshsync) requestAnimationFrame(loop)
     else if (framerate) setTimeout(() => loop(), 1000 / framerate)
@@ -93,7 +92,7 @@ export const mksketch = (props) => {
 // mkpen :: Pen
 export const mkpen = () => ({ queue: [] })
 // commands
-const cmd = (cmd, pen, props) => ({ queue: [...pen.queue, { cmd, ...props }]})
+const cmd = (cmd, pen, props) => ({ queue: [...pen.queue, { cmd, ...props }] })
 export const bm = (pen, props) => cmd('bm', pen, props);
 export const bg = (pen, props) => cmd('bg', pen, props);
 export const rect = (pen, props) => cmd('shr', pen, props);
